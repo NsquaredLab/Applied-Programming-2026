@@ -80,15 +80,21 @@ class EMGViewer(QMainWindow):
 
         # TODO 1:
         # Set the window title to "EMG Signal Viewer"
+        self.setWindowTitle("EMG Signal Viewer")
         # Set the window size to 1000 x 700
+        self.resize(1000, 700)
         # self.setWindowTitle(...)
+        
         # self.resize(...)
+        
 
         # Central widget
         # TODO 2:
         # Create a QWidget called central_widget
+        central_widget = QWidget()
         # Set it as the central widget of the main window
         # central_widget = ...
+        self.setCentralWidget(central_widget)
         # self.setCentralWidget(...)
 
         # Layouts
@@ -97,61 +103,83 @@ class EMGViewer(QMainWindow):
         # - a vertical layout called main_layout attached to central_widget
         # - a horizontal layout called controls_layout
         # main_layout = ...
+        main_layout = QVBoxLayout(central_widget)
         # controls_layout = ...
+        controls_layout = QHBoxLayout()
 
         # Channel selector
         # TODO 4:
         # Create:
         # - QLabel("Channel:")
+        label = QLabel("Channel:")
         # - QComboBox()
+        combo = QComboBox()
         # Fill the combo box with "Channel 1", "Channel 2", ...
-        self.channel_label = None
-        self.channel_combo = None
+        combo.addItems([f"Channel {i+1}" for i in range(self.channel_data.shape[0])])
+        self.channel_label = label
+        self.channel_combo = combo
 
         # Signal selector
         # TODO 5:
         # Create:
         # - QLabel("Signal:")
+        label = QLabel("Signal:")
         # - QComboBox()
+        combo = QComboBox()
         # Add the items ["Original", "Filtered", "RMS"]
-        self.signal_label = None
-        self.signal_combo = None
+        combo.addItems(["Original", "Filtered", "RMS"])
+        self.signal_label = label
+        self.signal_combo = combo
 
         # Button: change color
         # TODO 6:
         # Create a QPushButton with the text "Change Color"
-        self.color_button = None
+        self.color_button = QPushButton("Change Color")
 
         # Add controls
         # TODO 7:
         # Add the widgets to controls_layout in this order:
-        # channel_label, channel_combo, signal_label, signal_combo, color_button
+        controls_layout.addWidget(self.channel_label)
+        controls_layout.addWidget(self.channel_combo)
+        controls_layout.addWidget(self.signal_label)
+        controls_layout.addWidget(self.signal_combo)
+        controls_layout.addWidget(self.color_button)
 
         # TODO 8:
         # Add controls_layout to main_layout
+        main_layout.addLayout(controls_layout)
 
         # Matplotlib
         # TODO 9:
         # Create:
         # - a Figure with figsize=(8, 5)
+        fig = Figure(figsize=(8, 5))
         # - a FigureCanvas from that figure
+        canvas = FigureCanvas(fig)
         # - one subplot using add_subplot(111)
-        self.figure = None
-        self.canvas = None
-        self.ax = None
+        ax = fig.add_subplot(111)
+
+        self.figure = fig
+        self.canvas = canvas
+        self.ax = ax
 
         # TODO 10:
         # Add the canvas to main_layout
+        main_layout.addWidget(self.canvas)
 
         # Connections
         # TODO 11:
         # Connect:
         # - channel_combo.currentIndexChanged -> self.update_plot
+        self.channel_combo.currentIndexChanged.connect(self.update_plot)
         # - signal_combo.currentIndexChanged -> self.update_plot
+        self.signal_combo.currentIndexChanged.connect(self.update_plot)
         # - color_button.clicked -> self.change_color
+        self.color_button.clicked.connect(self.change_color)
 
         # TODO 12:
         # Call self.update_plot() once so an initial plot appears
+        self.update_plot()
 
     # ======================
     # Logic
@@ -192,7 +220,7 @@ class EMGViewer(QMainWindow):
 # ======================
 
 def main():
-    filename = "recording.pkl"
+    filename = r"C:/Users/hcgut/Documents/Applied-Programming-2026/recording.pkl"
 
     emg_signal, sampling_rate = load_emg_data(filename)
     channel_data = restructure_emg_data(emg_signal)

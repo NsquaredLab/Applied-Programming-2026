@@ -24,8 +24,8 @@ def load_emg_data(filename: str):
         data["device_information"]["sampling_frequency"]
     """
 
-    # TODO: load the pickle file with pandas
-    data = None
+    # TODO: load the pickle file with pandas // COMPLETED
+    data = pd.read_pickle(filename)
 
     print("Data structure:")
     print("-" * 50)
@@ -182,8 +182,8 @@ def plot_emg_processing(
 
 
 def main():
-    # TODO: get the filepath of the pkl file (Use / not \)
-    filename = "recording.pkl"
+    # TODO: get the filepath of the pkl file (Use / not \) // COMPLETED
+    filename = "C:/Users/hcgut/Documents/Applied-Programming-2026/recording.pkl"
 
     emg_signal, sampling_rate = load_emg_data(filename)
     channel_data, _ = restructure_emg_data(emg_signal)
